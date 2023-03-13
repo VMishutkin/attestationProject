@@ -1,6 +1,6 @@
 package pro.sky.attestationproject.model;
 
-public enum PackageType {
+public enum MailType {
     LETTER,
     PACKAGE,
     PARCEL,

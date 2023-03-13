@@ -1,20 +1,32 @@
 package pro.sky.attestationproject.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-
+import java.util.List;
+import javax.persistence.*;
 @Entity
+@Data
 public class PostOffice {
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private int index;
     private String name;
     private String address;
-    @ManyToMany
-    private ArrayList<Package> packages;
+    @OneToMany
+    private List<Event> statuses;
+
+    public PostOffice() {
+        statuses = new ArrayList<Event>();
+    }
+
+    @Override
+    public String toString(){
+        return id + " " + name +" " + index +   " " + address;
+    }
+
+
 }
