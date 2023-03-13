@@ -86,7 +86,7 @@ public class PostService {
      * @return
      */
     public boolean arrivalMail(int mailId, int officeId) {
-        Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
+        Optional<Event> lastEvent = eventRepository.findLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
             if (status == EventType.DEPARTED) {
@@ -103,7 +103,7 @@ public class PostService {
      * @return
      */
     public boolean departMail(int mailId, int officeId) {
-        Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
+        Optional<Event> lastEvent = eventRepository.findLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
             if (status == EventType.REGISTERED || status == EventType.ARRIVED) {
@@ -119,7 +119,7 @@ public class PostService {
      * @return
      */
     public boolean receivigMail(int mailId, int officeId) {
-        Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
+        Optional<Event> lastEvent = eventRepository.findLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
             if (status == EventType.ARRIVED && isDelievered(lastEvent.get())) {
@@ -148,7 +148,7 @@ public class PostService {
      * @return последнее событие в виде строки
      */
     public String getMailStatus(int mailId) {
-        Optional<Event> status = eventRepository.foundLastStatusById(mailId);
+        Optional<Event> status = eventRepository.findLastStatusById(mailId);
         if (status.isPresent()) {
             return status.get().toString();
         }

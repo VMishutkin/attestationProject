@@ -38,7 +38,7 @@ public class PostController {
 
     @PostMapping("/register")
     public ResponseEntity registerMail(MailDto mailDto,
-                                       int officeId) {
+                                       Integer officeId) {
         if (postService.registerPackage(mailDto, officeId)) {
             return ResponseEntity.ok().build();
         }
@@ -58,7 +58,7 @@ public class PostController {
     )
 
     @PostMapping("/arrival")
-    public ResponseEntity arrivalMail(int mailId, int officeId) {
+    public ResponseEntity arrivalMail(Integer mailId, Integer officeId) {
         if (postService.arrivalMail(mailId, officeId)) {
             return ResponseEntity.ok().build();
         }
@@ -80,7 +80,7 @@ public class PostController {
             )
     )
     @PostMapping("/depart")
-    public ResponseEntity departPackage(int mailId, int officeId) {
+    public ResponseEntity departPackage(Integer mailId, Integer officeId) {
         if (postService.departMail(mailId, officeId)) {
             return ResponseEntity.ok().build();
         }
@@ -102,7 +102,7 @@ public class PostController {
             )
     )
     @PostMapping("/recieving")
-    public ResponseEntity recievingMail(int mailId, int officeId) {
+    public ResponseEntity recievingMail(Integer mailId, Integer officeId) {
         postService.receivigMail(mailId, officeId);
         return ResponseEntity.ok().build();
     }
@@ -111,7 +111,7 @@ public class PostController {
             description = "Получение последнего статуса посылки по ее ID"
     )
     @GetMapping("/getStatus/{mailId}")
-    public String getMailStatus(@PathVariable int mailId) {
+    public String getMailStatus(@PathVariable Integer mailId) {
         return postService.getMailStatus(mailId);
     }
 
@@ -120,7 +120,7 @@ public class PostController {
 
     )
     @GetMapping("/getHistory/{mailId}")
-    public String getMailHistory(@PathVariable int mailId) {
+    public String getMailHistory(@PathVariable Integer mailId) {
         postService.getMailHistory(mailId);
         return postService.getMailHistory(mailId);
     }
