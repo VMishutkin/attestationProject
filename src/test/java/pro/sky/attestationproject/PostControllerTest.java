@@ -1,5 +1,6 @@
 package pro.sky.attestationproject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import pro.sky.attestationproject.controller.PostController;
 import pro.sky.attestationproject.model.EventType;
 import pro.sky.attestationproject.model.MailType;
+import pro.sky.attestationproject.model.dto.MailDto;
 import pro.sky.attestationproject.model.entity.Event;
 import pro.sky.attestationproject.model.entity.Mail;
 import pro.sky.attestationproject.model.entity.PostOffice;
@@ -40,8 +42,11 @@ import static org.springframework.web.servlet.function.RequestPredicates.param;
 public class PostControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private Mapper mapper;
 
-
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private EventRepository eventRepository;
     @MockBean
@@ -50,8 +55,7 @@ public class PostControllerTest {
     private PostOfficeRepository postOfficeRepository;
     @SpyBean
     private PostService postService;
-    @MockBean
-    private Mapper mapper;
+
     @InjectMocks
     private PostController postController;
 
@@ -104,13 +108,26 @@ public class PostControllerTest {
         when(eventRepository.save(any(Event.class))).thenReturn(event);
         when(postOfficeRepository.findById(any(Integer.class))).thenReturn(Optional.of(postOffice));
 
+        MailDto mailDto = new MailDto();
+        mailDto.setPackageType("LETTER");
+        mailDto.setRecipientAddress("test");
+        mailDto.setRecipientName("testname");
+        mailDto.setDestinationOfficeIndex(22);
+        Mail mail= getMailTest();
+        when(mapper.mailDtoToMail(any(MailDto.class))).thenReturn(mail);
+        when(mailRepository.save(any(Mail.class))).thenReturn(mail);
+        mockMvc.perform(post("/register")
+                        .param("officeId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailDto))
+        ).andExpect(status().isOk());
 
-
+/*
         mockMvc.perform(post("/register")
                         .content(mailObject.toString())
                         .contentType("application/json")
                         .param("officeId", "1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk());*/
 
 /*        mockMvc.perform(
                 post("/register")

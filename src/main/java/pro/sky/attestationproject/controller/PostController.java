@@ -37,7 +37,7 @@ public class PostController {
     )
 
     @PostMapping("/register")
-    public ResponseEntity registerMail(MailDto mailDto,
+    public ResponseEntity registerMail(@RequestBody MailDto mailDto,
                                        Integer officeId) {
         if (postService.registerPackage(mailDto, officeId)) {
             return ResponseEntity.ok().build();
