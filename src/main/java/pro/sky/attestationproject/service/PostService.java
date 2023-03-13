@@ -55,6 +55,13 @@ public class PostService {
 
     }
 
+    /**
+     * Регистрация события
+     * @param mailId посылка
+     * @param officeId ид офиса
+     * @param eventType вид события
+     * @return
+     */
     private boolean createEvent(int mailId, int officeId, EventType eventType) {
         try {
             Mail mail = mailRepository.findById(mailId).orElseThrow(NoSuchElementException::new);
@@ -111,27 +118,35 @@ public class PostService {
      * @param officeId офис должен совпадать с назначением посылки
      * @return
      */
-    public boolean receivigMail(int mailId, int postOfficeId) {
+    public boolean receivigMail(int mailId, int officeId) {
         Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
-            if (status == EventType.ARRIVED && isDelievered(lastEvent.get(), mailId)) {
-                createEvent(mailId, postOfficeId, EventType.RECIEVED);
+            if (status == EventType.ARRIVED && isDelievered(lastEvent.get())) {
+                createEvent(mailId, officeId, EventType.RECIEVED);
                 return true;
             }
         }
         return false;
     }
 
-
-    private boolean isDelievered(Event event, int mailId) {
+    /**
+     * Проверка, что посылка доехала до пункта назначения
+     * @param event последнее событие (должно быть прибытие в конечный пункт)
+     * @return
+     */
+    private boolean isDelievered(Event event) {
         if (event.getPostOffice().getIndex() == event.getMail().getRecieverIndex()) {
             return true;
         }
         return false;
     }
 
-
+    /**
+     * Получение и вывод последнего события по ID
+     * @param mailId
+     * @return последнее событие в виде строки
+     */
     public String getMailStatus(int mailId) {
         Optional<Event> status = eventRepository.foundLastStatusById(mailId);
         if (status.isPresent()) {
@@ -142,6 +157,11 @@ public class PostService {
         //return status.toString();
     }
 
+    /**
+     * получение и вывод всей истории перемещений по ID посылки
+     * @param mailId
+     * @return строка с соединенным список событий
+     */
     public String getMailHistory(int mailId) {
 
         List<Event> history = eventRepository.getHistoryById(mailId);

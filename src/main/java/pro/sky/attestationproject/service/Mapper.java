@@ -17,11 +17,6 @@ import pro.sky.attestationproject.repository.PostOfficeRepository;
  */
 @Service
 public class Mapper {
-    private final PostOfficeRepository postOfficeRepository;
-
-    public Mapper(PostOfficeRepository postOfficeRepository) {
-        this.postOfficeRepository = postOfficeRepository;
-    }
 
     public Mail mailDtoToMail(MailDto mailDto) throws NullPointerException, IllegalArgumentException {
         Mail mail = new Mail();
@@ -30,9 +25,6 @@ public class Mapper {
         mail.setRecieverName(mailDto.getRecipientName());
         MailType type = Enum.valueOf(MailType.class, mailDto.getPackageType().toUpperCase());
         mail.setPackageType(type);
-        // Optional<PostOffice> foundOffice = postOfficeRepository.findByIndex();
         return mail;
-
-
     }
 }
