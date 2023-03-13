@@ -15,6 +15,13 @@ public class PostController {
         this.postService = postService;
     }
 
+    /**
+     *
+     * @param mailDto шаблон для созданиня почтового отправления
+     * @param officeId ИД офиса в котором регистрируется отправление
+     * @return
+     */
+
     @PostMapping("/register")
     public ResponseEntity registerMail(MailDto mailDto, int officeId) {
         if (postService.registerPackage(mailDto, officeId)) {
@@ -23,6 +30,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    /**
+     * Прибытие отправления в офис. она должна иметь статус DEPARTED иначе метод не сработает
+     * @param mailId номер отправления
+     * @param officeId номер офиса в который прибывает почта
+     * @return
+     */
     @PostMapping("/arrival")
     public ResponseEntity arrivalMail(int mailId, int officeId) {
         if (postService.arrivalMail(mailId, officeId)) {
@@ -31,6 +44,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    /**
+     * Отправление посылки. Она должна иметь статус ARRIVED или REGISTERED
+     * @param mailId номер отправления
+     * @param officeId номер офиса из которого улетает почта
+     * @return
+     */
     @PostMapping("/depart")
     public ResponseEntity departPackage(int mailId, int officeId) {
         if (postService.departMail(mailId, officeId)) {
@@ -39,17 +58,33 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    /**
+     * Получение почты, она должна иметь стасус ARRIVED
+     * @param mailId номер отправления
+     * @param officeId офис должен совпадать с назначением посылки
+     * @return
+     */
     @PostMapping("/recieving")
     public ResponseEntity recievingMail(int mailId, int officeId) {
         postService.receivigMail(mailId, officeId);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Посмотреть текущий статус почты
+     * @param mailId номер отправления
+     * @return
+     */
     @GetMapping("/getStatus/{mailId}")
     public String getMailStatus(@PathVariable int mailId) {
         return postService.getMailStatus(mailId);
     }
 
+    /**
+     * посмотреть историю перемещений посылки
+     * @param mailId номер отправления
+     * @return
+     */
     @GetMapping("/getHistory/{mailId}")
     public String getMailHistory(@PathVariable int mailId) {
         postService.getMailHistory(mailId);

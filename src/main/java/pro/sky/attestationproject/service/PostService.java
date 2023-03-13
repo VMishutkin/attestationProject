@@ -35,7 +35,12 @@ public class PostService {
         this.mapper = mapper;
     }
 
-
+    /**
+     *
+     * @param mailDto шаблон для созданиня почтового отправления
+     * @param officeId ИД офиса в котором регистрируется отправление
+     * @return
+     */
     public boolean registerPackage(MailDto mailDto, int officeId) {
         try {
             Mail mail = mapper.mailDtoToMail(mailDto);
@@ -67,29 +72,45 @@ public class PostService {
         return false;
     }
 
-
-    public boolean arrivalMail(int mailId, int postOfficeId) {
+    /**
+     * Прибытие отправления в офис. она должна иметь статус DEPARTED иначе метод не сработает
+     * @param mailId номер отправления
+     * @param officeId номер офиса в который прибывает почта
+     * @return
+     */
+    public boolean arrivalMail(int mailId, int officeId) {
         Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
             if (status == EventType.DEPARTED) {
-                return createEvent(mailId, postOfficeId, EventType.ARRIVED);
+                return createEvent(mailId, officeId, EventType.ARRIVED);
             }
         }
         return false;
     }
 
-    public boolean departMail(int mailId, int postOfficeId) {
+    /**
+     * Отправление посылки. Она должна иметь статус ARRIVED или REGISTERED
+     * @param mailId номер отправления
+     * @param officeId номер офиса из которого улетает почта
+     * @return
+     */
+    public boolean departMail(int mailId, int officeId) {
         Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
         if (lastEvent.isPresent()) {
             EventType status = lastEvent.get().getEventType();
             if (status == EventType.REGISTERED || status == EventType.ARRIVED) {
-                return createEvent(mailId, postOfficeId, EventType.DEPARTED);
+                return createEvent(mailId, officeId, EventType.DEPARTED);
             }
         }
         return false;
     }
-
+    /**
+     * Получение почты, она должна иметь стасус ARRIVED
+     * @param mailId номер отправления
+     * @param officeId офис должен совпадать с назначением посылки
+     * @return
+     */
     public boolean receivigMail(int mailId, int postOfficeId) {
         Optional<Event> lastEvent = eventRepository.foundLastStatusById(mailId);
         if (lastEvent.isPresent()) {

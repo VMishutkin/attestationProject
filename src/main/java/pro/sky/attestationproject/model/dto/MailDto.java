@@ -2,6 +2,9 @@ package pro.sky.attestationproject.model.dto;
 
 import lombok.Data;
 
+/**
+ * ДТО для регистрации почты
+ */
 @Data
 public class MailDto {
 
